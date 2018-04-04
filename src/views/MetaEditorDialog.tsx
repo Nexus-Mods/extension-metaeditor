@@ -13,11 +13,11 @@ import { connect } from 'react-redux';
 import semver = require('semver');
 import * as url from 'url';
 import * as nodeUtil from 'util';
-import { ComponentEx, FormFeedback, Icon, log, selectors, tooltip, util } from 'vortex-api';
+import { ComponentEx, FormFeedback, Icon, log, selectors, tooltip, types, util } from 'vortex-api';
 
 interface IConnectedProps {
-  downloads: { [id: string]: any };
-  downloadPath: string;
+  downloads: { [id: string]: types.IDownload };
+  paths: { [gameId: string]: types.IStatePaths };
   visibleId: string;
 }
 
@@ -192,10 +192,12 @@ class MetaEditorDialog extends ComponentEx<IProps, IComponentState> {
       return;
     }
 
-    const { downloads, downloadPath } = this.props;
+    const { downloads, paths } = this.props;
     if (downloads[downloadId].localPath === undefined) {
       return;
     }
+
+    const downloadPath = util.resolvePath('download', paths, downloads[downloadId].game);
 
     const filePath = path.join(downloadPath, downloads[downloadId].localPath);
 
@@ -293,11 +295,11 @@ class MetaEditorDialog extends ComponentEx<IProps, IComponentState> {
   }
 }
 
-function mapStateToProps(state: any): IConnectedProps {
+function mapStateToProps(state: types.IState): IConnectedProps {
   return {
     downloads: state.persistent.downloads.files,
-    downloadPath: selectors.downloadPath(state),
-    visibleId: state.session.metaEditor.showDialog,
+    paths: state.settings.mods.paths,
+    visibleId: (state.session as any).metaEditor.showDialog,
   };
 }
 
