@@ -189,14 +189,16 @@ class RuleEditor extends ComponentEx<IRule, IComponentState> {
     this.context.api.selectFile({})
       .then((selectedFile: string) => {
         filePath = selectedFile;
-        return this.context.api.lookupModMeta({filePath});
+        return this.context.api.lookupModMeta({filePath})
+          .catch(() => []);
       })
       .then((result: ILookupResult[]) => {
         // TODO: always use hash because lookup by meta information is not currently
         //   supported on the web side
         this.setState(update(this.state, { md5: { $set: '...' } }));
         const { genHash } = require('modmeta-db');
-        return genHash(filePath);
+        return genHash(filePath)
+          .catch(err => undefined);
         /*
         if (result.length === 0) {
           return genHash(filePath);
