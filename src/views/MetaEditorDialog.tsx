@@ -17,8 +17,8 @@ import { ComponentEx, FormFeedback, Icon, log, selectors, tooltip, types, util }
 
 interface IConnectedProps {
   downloads: { [id: string]: types.IDownload };
-  paths: { [gameId: string]: types.IStatePaths };
   visibleId: string;
+  downloadPath: string;
 }
 
 interface IActionProps {
@@ -192,12 +192,10 @@ class MetaEditorDialog extends ComponentEx<IProps, IComponentState> {
       return;
     }
 
-    const { downloads, paths } = this.props;
+    const { downloads, downloadPath } = this.props;
     if (downloads[downloadId].localPath === undefined) {
       return;
     }
-
-    const downloadPath = util.resolvePath('download', paths, downloads[downloadId].game);
 
     const filePath = path.join(downloadPath, downloads[downloadId].localPath);
 
@@ -298,8 +296,8 @@ class MetaEditorDialog extends ComponentEx<IProps, IComponentState> {
 function mapStateToProps(state: types.IState): IConnectedProps {
   return {
     downloads: state.persistent.downloads.files,
-    paths: state.settings.mods.paths,
     visibleId: (state.session as any).metaEditor.showDialog,
+    downloadPath: selectors.downloadPath(state),
   };
 }
 
