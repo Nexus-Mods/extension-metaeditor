@@ -10,6 +10,7 @@ import { ControlLabel, FormControl, FormGroup,
          ListGroup, ListGroupItem, Modal } from 'react-bootstrap';
 import { translate } from 'react-i18next';
 import { connect } from 'react-redux';
+import * as Redux from 'redux';
 import semver = require('semver');
 import * as url from 'url';
 import * as nodeUtil from 'util';
