@@ -2,7 +2,7 @@ import { setShowMetaEditor } from '../actions';
 
 import RuleEditor from './RuleEditor';
 
-import * as update from 'immutability-helper';
+import update from 'immutability-helper';
 import { ILookupResult, IModInfo, IReference, IRule, RuleType } from 'modmeta-db';
 import * as path from 'path';
 import * as React from 'react';
@@ -210,7 +210,7 @@ class MetaEditorDialog extends ComponentEx<IProps, IComponentState> {
       filePath,
       fileMD5: downloads[downloadId].fileMD5,
       fileSize: downloads[downloadId].size,
-      gameId: downloads[downloadId].game,
+      gameId: downloads[downloadId].game[0],
      })
       .then((info: ILookupResult[]) => {
         if (info.length > 0) {

@@ -1,4 +1,4 @@
-import * as update from 'immutability-helper';
+import update from 'immutability-helper';
 import { IHashResult, ILookupResult, IReference, RuleType } from 'modmeta-db';
 import * as React from 'react';
 import { Button, ControlLabel, FormControl, FormGroup,
@@ -214,7 +214,6 @@ class RuleEditor extends ComponentEx<IRule, IComponentState> {
         */
       })
       .then((hash?: IHashResult) => {
-        this.setState(update(this.state, { md5calc: { $set: false } }));
         if (hash !== undefined) {
           this.setState(update(this.state, {
             refType: { $set: 'md5' },

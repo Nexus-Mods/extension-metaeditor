@@ -1,16 +1,10 @@
 import { setShowMetaEditor } from '../actions';
 
-import { ComponentEx, FormFeedback, Icon,
-         log, selectors, ToolbarIcon, tooltip,
-         util } from 'vortex-api';
+import { ComponentEx, selectors, ToolbarIcon } from 'vortex-api';
 
 import * as I18next from 'i18next';
-import * as path from 'path';
 import * as React from 'react';
-import { ControlLabel, FormControl, FormGroup, ListGroup,
-         ListGroupItem, Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import * as nodeUtil from 'util';
 
 export interface IBaseProps {
   t: I18next.TranslationFunction;
