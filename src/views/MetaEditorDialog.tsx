@@ -8,7 +8,7 @@ import * as path from 'path';
 import * as React from 'react';
 import { ControlLabel, FormControl, FormGroup,
          ListGroup, ListGroupItem, Modal } from 'react-bootstrap';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import * as Redux from 'redux';
 import semver = require('semver');
@@ -308,6 +308,6 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>): IActionProps {
   };
 }
 
-export default translate(['common'], { wait: false })(
+export default withTranslation(['common'])(
   connect(mapStateToProps, mapDispatchToProps)(
-    MetaEditorDialog)) as React.ComponentClass<{}>;
+    MetaEditorDialog) as any) as React.ComponentClass<{}>;

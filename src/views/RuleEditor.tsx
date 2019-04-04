@@ -3,7 +3,7 @@ import { IHashResult, ILookupResult, IReference, RuleType } from 'modmeta-db';
 import * as React from 'react';
 import { Button, ControlLabel, FormControl, FormGroup,
          Modal, Nav, NavItem } from 'react-bootstrap';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import { ComponentEx, FormFeedback } from 'vortex-api';
 
 interface IBaseProps {
@@ -255,5 +255,5 @@ class RuleEditor extends ComponentEx<IRule, IComponentState> {
 }
 
 export default
-  translate(['common', 'meta-editor'], { wait: false })(
+  withTranslation(['common', 'meta-editor'])(
     RuleEditor) as React.ComponentClass<IBaseProps>;
