@@ -29,7 +29,7 @@
     "babel-loader": "^8.0.2",
     "babel-polyfill": "^6.26.0",
     "bluebird": "^3.5.2",
-    "copyfiles": "^1.0.0",
+    "copyfiles": "^2.1.1",
     "i18next": "^15.0.9",
     "immutability-helper": "^2.6.6",
     "json-loader": "^0.5.4",
