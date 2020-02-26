@@ -43,7 +43,7 @@ class MetaEditorDialog extends ComponentEx<IProps, IComponentState> {
     });
   }
 
-  public componentWillReceiveProps(nextProps: IProps) {
+  public UNSAFE_componentWillReceiveProps(nextProps: IProps) {
     if (this.props.visibleId !== nextProps.visibleId) {
       this.retrieveInfo(nextProps.visibleId);
     }
