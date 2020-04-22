@@ -30,15 +30,15 @@
     "babel-polyfill": "^6.26.0",
     "bluebird": "^3.5.2",
     "copyfiles": "^2.1.1",
-    "i18next": "^15.0.9",
+    "i18next": "^19.0.1",
     "immutability-helper": "^2.6.6",
     "json-loader": "^0.5.4",
     "modmeta-db": "Nexus-Mods/modmeta-db",
     "react": "^16.5.1",
-    "react-i18next": "^10.6.1",
+    "react-i18next": "^11.2.2",
     "semver": "^5.3.0",
     "ts-loader": "^5.1.1",
-    "vortex-api": "Nexus-Mods/vortex-api",
+    "vortex-api": "Nexus-Mods/vortex-api#electron7",
     "webpack": "^4.19.1"
   }
 }

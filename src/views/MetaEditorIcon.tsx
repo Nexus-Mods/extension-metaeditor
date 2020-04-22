@@ -1,13 +1,12 @@
 import { setShowMetaEditor } from '../actions';
 
-import { ComponentEx, selectors, ToolbarIcon } from 'vortex-api';
+import { ComponentEx, selectors, ToolbarIcon, types } from 'vortex-api';
 
-import I18next from 'i18next';
 import * as React from 'react';
 import { connect } from 'react-redux';
 
 export interface IBaseProps {
-  t: typeof I18next.t;
+  t: types.TFunction;
   instanceId: string;
   buttonType: string;
 }
