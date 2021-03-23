@@ -9,6 +9,8 @@ import * as path from 'path';
 import { types } from 'vortex-api';
 
 function main(context: types.IExtensionContext) {
+  context.registerReducer(['session', 'metaEditor'], sessionReducer);
+
   context.registerDialog('meta-editor-dialog', MetaEditorDialog);
 
   context.registerAction('downloads-action-icons', 100, 'edit', {}, 'View Meta Data',
@@ -18,8 +20,6 @@ function main(context: types.IExtensionContext) {
       const state: types.IState = context.api.store.getState();
       return state.persistent.downloads.files[instanceIds[0]].state === 'finished';
     });
-
-  context.registerReducer(['session', 'metaEditor'], sessionReducer);
 
   context.once(() => {
     context.api.setStylesheet('meta-editor', path.join(__dirname, 'metaeditor.scss'));
