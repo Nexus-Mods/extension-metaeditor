@@ -39,6 +39,7 @@
     "semver": "^5.3.0",
     "ts-loader": "^5.1.1",
     "vortex-api": "Nexus-Mods/vortex-api",
-    "webpack": "^4.19.1"
+    "webpack": "^4.19.1",
+    "webpack-cli": "^3.3.11"
   }
 }
