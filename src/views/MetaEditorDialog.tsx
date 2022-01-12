@@ -302,7 +302,7 @@ function mapStateToProps(state: types.IState): IConnectedProps {
   };
 }
 
-function mapDispatchToProps(dispatch: Redux.Dispatch<any>): IActionProps {
+function mapDispatchToProps(dispatch): IActionProps {
   return {
     onHide: () => dispatch(setShowMetaEditor(undefined)),
   };

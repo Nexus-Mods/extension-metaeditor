@@ -56,4 +56,4 @@ function mapDispatchToProps(dispatch): IActionProps {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  MetaEditorIcon) as React.ComponentClass<IBaseProps>;
+  MetaEditorIcon) as any as React.ComponentClass<IBaseProps>;
