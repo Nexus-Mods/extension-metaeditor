@@ -3,18 +3,19 @@ import { setShowMetaEditor } from '../actions';
 import RuleEditor from './RuleEditor';
 
 import update from 'immutability-helper';
-import { ILookupResult, IModInfo, IReference, IRule, RuleType } from 'modmeta-db';
-import * as path from 'path';
+import type { IModInfo, IReference, IRule, RuleType } from 'modmeta-db';
 import * as React from 'react';
 import { ControlLabel, FormControl, FormGroup,
          ListGroup, ListGroupItem, Modal } from 'react-bootstrap';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import * as Redux from 'redux';
-import semver = require('semver');
-import * as url from 'url';
-import * as nodeUtil from 'util';
-import { ComponentEx, FormFeedback, Icon, log, selectors, tooltip, types, util } from 'vortex-api';
+import { ComponentEx, FormFeedback, Icon, selectors, tooltip, types, util } from 'vortex-api';
+
+interface IBaseProps {
+  retrieveInfo: (downloadId: string) => Promise<IModInfo>,
+  validateVersion: (version: string) => 'error' | 'success',
+  validateURI: (uri: string) => 'error' | 'success',
+}
 
 interface IConnectedProps {
   downloads: { [id: string]: types.IDownload };
@@ -24,9 +25,10 @@ interface IConnectedProps {
 
 interface IActionProps {
   onHide: () => void;
+  onShowError: (title: string, details: any, options?: types.IErrorOptions) => void;
 }
 
-type IProps = IConnectedProps & IActionProps;
+type IProps = IBaseProps & IConnectedProps & IActionProps;
 
 interface IComponentState {
   info: IModInfo;
@@ -43,22 +45,30 @@ class MetaEditorDialog extends ComponentEx<IProps, IComponentState> {
     });
   }
 
-  public UNSAFE_componentWillReceiveProps(nextProps: IProps) {
-    if (this.props.visibleId !== nextProps.visibleId) {
-      this.retrieveInfo(nextProps.visibleId);
+  public componentDidUpdate(prevProps: IProps): void {
+    if (this.props.visibleId !== prevProps.visibleId) {
+      this.triggerInfoUpdate(this.props.visibleId);
+    }
+  }
+
+  private async triggerInfoUpdate(visibleId: string) {
+    try {
+      this.nextState.info = await this.props.retrieveInfo(visibleId);
+    } catch (err) {
+      this.props.onShowError('failed to fetch mod info', err);
     }
   }
 
   public render(): JSX.Element {
-    const { t, visibleId } = this.props;
+    const { t, validateURI, validateVersion } = this.props;
     const { info, showRuleEditor } = this.state;
 
     if (info === undefined) {
       return null;
     }
 
-    const fvState = semver.valid(info.fileVersion) === null ? 'error' : 'success';
-    const urlState = url.parse(info.sourceURI).host === null ? 'error' : 'success';
+    const fvState = validateVersion(info.fileVersion);
+    const urlState = validateURI(info.sourceURI);
 
     return (
       <Modal show={info !== undefined} onHide={this.close}>
@@ -168,73 +178,6 @@ class MetaEditorDialog extends ComponentEx<IProps, IComponentState> {
     }
   }
 
-  private getEmptyData(filePath?: string, fileInfo?: any): IModInfo {
-    const fileName = filePath !== undefined
-      ? path.basename(filePath, path.extname(filePath))
-      : '';
-    const modName = filePath !== undefined
-      ? path.basename(filePath, path.extname(filePath))
-      : '';
-    return {
-      fileName,
-      fileSizeBytes: fileInfo !== undefined ? fileInfo.size : 0,
-      gameId: fileInfo.game,
-      fileVersion: '',
-      fileMD5: fileInfo !== undefined ? fileInfo.fileMD5 : '',
-      sourceURI: '',
-      rules: [],
-      details: {},
-    };
-  }
-
-  private retrieveInfo(downloadId: string) {
-    if (downloadId === undefined) {
-      this.nextState.info = undefined;
-      return;
-    }
-
-    const { downloads, downloadPath } = this.props;
-    if (downloads[downloadId].localPath === undefined) {
-      return;
-    }
-
-    const filePath = path.join(downloadPath, downloads[downloadId].localPath);
-
-    this.context.api.sendNotification({
-      id: 'meta-lookup',
-      type: 'activity',
-      message: 'Mod lookup...',
-    });
-
-    this.context.api.lookupModMeta({
-      filePath,
-      fileMD5: downloads[downloadId].fileMD5,
-      fileSize: downloads[downloadId].size,
-      gameId: downloads[downloadId].game[0],
-     })
-      .then((info: ILookupResult[]) => {
-        if (info.length > 0) {
-          this.nextState.info = {
-            fileName: filePath,
-            fileMD5: downloads[downloadId].fileMD5,
-            fileSizeBytes: downloads[downloadId].size,
-            gameId: downloads[downloadId].game,
-            ...info[0].value };
-        } else {
-          this.nextState.info = this.getEmptyData(filePath, downloads[downloadId]);
-        }
-        return Promise.resolve();
-      })
-      .catch((err) => {
-        log('info', 'Failed to look up mod meta information',
-            { err: nodeUtil.inspect(err) });
-        this.nextState.info = this.getEmptyData(filePath, downloads[downloadId]);
-      })
-      .finally(() => {
-        this.context.api.dismissNotification('meta-lookup');
-      });
-  }
-
   private removeRule = (evt) => {
     const idSegmented = evt.currentTarget.id.split('-');
     const idx = idSegmented[idSegmented.length - 1];
@@ -305,6 +248,8 @@ function mapStateToProps(state: types.IState): IConnectedProps {
 function mapDispatchToProps(dispatch): IActionProps {
   return {
     onHide: () => dispatch(setShowMetaEditor(undefined)),
+    onShowError: (title: string, details: any, options: types.IErrorOptions) =>
+      util.showError(dispatch, title, details, options),
   };
 }
 
