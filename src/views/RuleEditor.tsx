@@ -75,7 +75,7 @@ class RuleEditor extends ComponentEx<IRule, IComponentState> {
           <Button
             onClick={this.browseForArchive}
           >
-          {t('Browse')}
+            {t('Browse')}
           </Button>
         </Modal.Body>
         <Modal.Footer>
